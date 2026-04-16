@@ -1,4 +1,4 @@
-# DPAdmin Vercel
+# Admin Panel by Cleverior
 
 Deploy langsung ke Vercel.
 
