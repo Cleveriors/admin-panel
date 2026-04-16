@@ -37,7 +37,7 @@ export default function Login() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h1>DPAdmin Ultra</h1>
+      <h1>Admin Panel by Cleverior</h1>
 
       {servers.map((s, i) => (
         <div key={i} onClick={() => connect(s.url)}>
