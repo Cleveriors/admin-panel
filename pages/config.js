@@ -1,23 +1,27 @@
-import { useState, useEffect } from "react";
 
-export default function Config() {
-  const [cfg, setCfg] = useState({});
+import {useState} from "react";
+import {signInWithEmailAndPassword} from "firebase/auth";
+import {auth} from "../lib/firebase";
+import {useRouter} from "next/router";
 
-  useEffect(() => {
-    const d = JSON.parse(localStorage.getItem("dp_data") || "{}");
-    setCfg(d.app_status || {});
-  }, []);
+export default function Login(){
+ const [email,setEmail]=useState("");
+ const [pass,setPass]=useState("");
+ const router=useRouter();
 
-  return (
-    <div style={{ padding: 20 }}>
-      <h2>Config</h2>
+ const login=async()=>{
+  try{
+   await signInWithEmailAndPassword(auth,email,pass);
+   router.push("/dashboard");
+  }catch{alert("Login gagal");}
+ };
 
-      <textarea
-        value={cfg.message || ""}
-        onChange={(e) => setCfg({ ...cfg, message: e.target.value })}
-      />
-
-      <button>Save</button>
-    </div>
-  );
+ return(
+  <div className="page">
+   <h1>DPAdmin Premium</h1>
+   <input placeholder="Email" onChange={e=>setEmail(e.target.value)}/>
+   <input placeholder="Password" type="password" onChange={e=>setPass(e.target.value)}/>
+   <button onClick={login}>Login</button>
+  </div>
+ );
 }
