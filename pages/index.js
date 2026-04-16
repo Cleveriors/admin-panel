@@ -1,49 +1,31 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
-export default function Login() {
-  const [servers, setServers] = useState([]);
-  const router = useRouter();
+import {useState} from "react";
+import {signInWithEmailAndPassword} from "firebase/auth";
+import {auth} from "../lib/firebase";
+import {useRouter} from "next/router";
 
-  useEffect(() => {
-    setServers(JSON.parse(localStorage.getItem("dp_db_list") || "[]"));
-  }, []);
+export default function Login(){
+ const [email,setEmail]=useState("");
+ const [pass,setPass]=useState("");
+ const router=useRouter();
 
-  const addDB = () => {
-    const name = prompt("Nama DB");
-    let url = prompt("Firebase URL");
+ const login=async()=>{
+  try{
+   await signInWithEmailAndPassword(auth,email,pass);
+   router.push("/dashboard");
+  }catch{alert("Login gagal");}
+ };
 
-    if (!url) return;
-    if (!url.startsWith("http")) url = "https://" + url;
+ return(
+  <div className="page">
+   <h1>DPAdmin Premium</h1>
+   <input placeholder="Email" onChange={e=>setEmail(e.target.value)}/>
+   <input placeholder="Password" type="password" onChange={e=>setPass(e.target.value)}/>
+   <button onClick={login}>Login</button>
+  </div>
+ );
+}
 
-    const list = [...servers, { name, url }];
-    localStorage.setItem("dp_db_list", JSON.stringify(list));
-    setServers(list);
-  };
-
-  const connect = async (url) => {
-    try {
-      const res = await fetch(url + "/.json");
-      const data = await res.json();
-
-      localStorage.setItem("dp_url", url);
-      localStorage.setItem("dp_data", JSON.stringify(data));
-
-      router.push("/dashboard");
-    } catch {
-      alert("Connection Failed");
-    }
-  };
-
-  return (
-    <div style={{ padding: 20 }}>
-      <h1>Admin Panel by Cleverior</h1>
-
-      {servers.map((s, i) => (
-        <div key={i} onClick={() => connect(s.url)}>
-          {s.name}
-        </div>
-      ))}
 
       <button onClick={addDB}>+ Add Database</button>
     </div>
